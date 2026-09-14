@@ -1,10 +1,47 @@
-#include "neededLibrary/circularBuffer.hpp"
 #include <iostream>
 #include <cstdint>
 #include <string>
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <deque>
+
+
+
+// helper class
+
+class circularBuffer {
+public:
+    struct Glyph {
+        int row;
+        int col;
+        char character;
+    };
+
+private:
+    std::deque<Glyph> buffer;
+    int count;
+
+public:
+    circularBuffer(int size) : count(size) {}
+
+    void push(int row, int col, char character) {
+        if (buffer.size() >= count)
+            buffer.pop_front();
+
+        buffer.push_back({row, col, character});
+    }
+
+    int size() const {
+        return buffer.size();
+    }
+
+    Glyph& operator[](int index) {
+        return buffer[index];
+    }
+};
+
+// main class
+
 
 class fadescii {
 
@@ -83,7 +120,7 @@ public:
             throw std::invalid_argument("Invalid box dimensions or position");
         }
         originRow = row;
-        originCol = col;
+        originCol = col+1; // due to issue where col=0 was not behaving accordingly, so added +1 to col to fix it (if any other issue occur then i re-work on it again)
         height = h;
         width = w;
         isInitialized = true;
