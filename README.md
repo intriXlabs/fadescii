@@ -46,6 +46,25 @@ glowing trails, and character-by-character rendering.*
 
 ---
 
+## Important Note
+
+Fadescii is designed for **POSIX terminals** (Linux, macOS, BSD, WSL) and requires **ANSI escape codes** and **24-bit true-color support**.
+
+### Zero-Dependency Version
+
+The **absolute-zero-dependency version contains no POSIX-specific code**, so it can also be used on Windows, Android, or other platforms.
+
+The only requirements are:
+
+* ANSI escape code support
+* 24-bit true-color support
+* Providing the **terminal size (rows, columns)** before drawing
+
+Terminal-size detection is left to the application, since each platform provides different ways to obtain it. You can use **Windows APIs, POSIX APIs, Android APIs, or any other method** appropriate for your environment.
+
+**Fadescii handles the rendering; how you obtain the terminal size is up to you.**
+
+---
 
 ## 📖 Table of Contents
 
