@@ -1,44 +1,8 @@
 #include <iostream>
 #include <cstdint>
 #include <string>
-#include <unistd.h>
-#include <sys/ioctl.h>
-#include <deque>
-
-
-
-// helper class
-
-class circularBuffer {
-public:
-    struct Glyph {
-        int row;
-        int col;
-        char character;
-    };
-
-private:
-    std::deque<Glyph> buffer;
-    int count;
-
-public:
-    circularBuffer(int size) : count(size) {}
-
-    void push(int row, int col, char character) {
-        if (buffer.size() >= count)
-            buffer.pop_front();
-
-        buffer.push_back({row, col, character});
-    }
-
-    int size() const {
-        return buffer.size();
-    }
-
-    Glyph& operator[](int index) {
-        return buffer[index];
-    }
-};
+#include <thread>
+#include <chrono>
 
 // main class
 
@@ -111,12 +75,8 @@ private:
     }
 
 public:
-    int initialize(int row, int col, int h, int w) {
-        struct winsize wsize;
-        if(ioctl(STDOUT_FILENO, TIOCGWINSZ, &wsize) == -1) {
-            throw std::runtime_error("Failed to get terminal size");
-        }
-        if(row < 0 || col < 0 || h <= 0 || w <= 0 || row + h > wsize.ws_row || col + w > wsize.ws_col) {
+    int initialize(int row, int col, int h, int w, int termHeight, int termWidth) {
+        if(row < 0 || col < 0 || h <= 0 || w <= 0 || row + h > termHeight || col + w > termWidth) {
             throw std::invalid_argument("Invalid box dimensions or position");
         }
         originRow = row;
@@ -231,7 +191,11 @@ public:
 
                 advanceCursor();
 
-                usleep(static_cast<useconds_t>(speed * 1000000.0));
+                std::this_thread::sleep_for(
+                    std::chrono::microseconds(
+                        static_cast<long long>(speed * 1000000.0)
+                    )
+                );
                 continue;
             }
 
@@ -268,7 +232,11 @@ public:
 
             advanceCursor();
 
-            usleep(static_cast<useconds_t>(speed * 1000000.0));
+                std::this_thread::sleep_for(
+                    std::chrono::microseconds(
+                        static_cast<long long>(speed * 1000000.0)
+                    )
+                );
         }
 
         // Remaining glow characters ko text color mein finalize karo
@@ -403,9 +371,11 @@ public:
 
                 advanceCursor();
 
-                usleep(static_cast<useconds_t>(
-                    speed * 1000000.0
-                ));
+                std::this_thread::sleep_for(
+                    std::chrono::microseconds(
+                        static_cast<long long>(speed * 1000000.0)
+                    )
+                );
 
                 continue;
             }
@@ -473,9 +443,11 @@ public:
 
             advanceCursor();
 
-            usleep(static_cast<useconds_t>(
-                speed * 1000000.0
-            ));
+                std::this_thread::sleep_for(
+                    std::chrono::microseconds(
+                        static_cast<long long>(speed * 1000000.0)
+                    )
+                );
         }
 
         int currentIndex =

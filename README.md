@@ -305,6 +305,14 @@ Speed, colors, glow length — these aren't buried constants. They're exposed, d
 
 ---
 
+## things to be noticed
+the '\n' does make character does a specific things which is recorded algorithm behiviour: give in image - it leaves color before '\n'
+so color only ends cleanly if the function had completely finished it's rendering. otherwise the effect is in image.
+
+![feature](gifs/feature.png)
+
+---
+
 ## 📄 License
 
 Licensed under the MIT License. See [LICENSE](LICENSE) for details.

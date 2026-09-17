@@ -3,7 +3,6 @@
 #include <string>
 #include <unistd.h>
 #include <sys/ioctl.h>
-#include <deque>
 
 // main class
 
